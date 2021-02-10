@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -23,13 +24,15 @@ func main() {
 		//fmt.Println(os.Args[0])// args 第一个片 是文件路径
 		for _,v := range os.Args[1:] {
 			paths, files := filepath.Split(v)
-			file_name := strings.Split(files,".")[0]
+			file_ext := path.Ext(files)
+			file_name := strings.Split(files,file_ext)[0]
+			fmt.Println(paths, files, file_name, file_ext)
 			if judge,_ := regexp.MatchString(".[yaml|yml]$",files); judge {
 				//fmt.Println(v)
 				//fmt.Println(strings.Split(filepath.Base(v),".")[0])
 
 
-				//file_ext := path.Ext(files)
+
 
 				// 判断文件是否存在
 				if checkFileIsExist(v) {
