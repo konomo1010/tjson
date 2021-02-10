@@ -31,12 +31,13 @@ func YAML2JSON(y []byte) string {
 	}
 
 	CseJson(yamlObj)
-	mjson,_ :=json.MarshalIndent(info,"","")
+	mjson,_ :=json.MarshalIndent(info,"\r\n","")
 	mString := string(mjson)
 
 	info = map[string]string{}
 	ikey = []string{}
 
+	//return strings.Replace(mString,"\\","",-1)
 	return mString
 }
 
@@ -48,7 +49,7 @@ func CseJson(yamlObj interface{})  {
 			switch typedValue := v.(type) {
 			case map[interface{}]interface{}:
 				ikey = append(ikey, k.(string))
-				fmt.Println(typedValue)
+				//fmt.Println(typedValue)
 				CseJson(typedValue)
 			case string:
 				if len(ikey) >= 1 {
@@ -161,7 +162,7 @@ func map2str(smap map[interface{}]interface{}) map[string]interface{} {
 func sli2str(sli []string) string {
 	var sk string
 
-	fmt.Println("------------------------> ",sli)
+	//fmt.Println("------------------------> ",sli)
 	for _, v := range sli {
 		if sk != ""{
 			sk = sk + "." + v
@@ -182,6 +183,6 @@ func drop_tm(ss string) string {
 		}
 		buf.WriteRune(c)
 	}
-	fmt.Println("           tm      :", ss)
+	//fmt.Println("           tm      :", ss)
 	return ss
 }

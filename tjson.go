@@ -2,6 +2,7 @@ package main
 
 import (
 	"cseYaml2Json"
+	"fmt"
 	"github.com/lxn/walk"
 	. "github.com/lxn/walk/declarative"
 	"log"
@@ -19,8 +20,18 @@ func main() {
 		Children: []Widget{
 			HSplitter{
 				Children: []Widget{
-					TextEdit{AssignTo: &inTE},
-					TextEdit{AssignTo: &outTE, ReadOnly: true},
+					TextEdit{
+						AssignTo: &inTE,
+						VScroll: true,
+						TextColor:walk.RGB(73,156,84),
+					},
+					TextEdit{
+						AssignTo: &outTE,
+						ReadOnly: true,
+						VScroll: true,
+						CompactHeight: false,
+						ColumnSpan: 1,
+					},
 				},
 				OnBoundsChanged: func() {
 					//var windowIcon *walk.Icon
@@ -37,14 +48,17 @@ func main() {
 			},
 			PushButton{
 				Text: "cse json transform",
+				//MinSize: Size{10, 20},
 				OnClicked: func() {
-					var outstr string
-					if inTE.Text() == "" {
-						outstr = ""
-					}else {
-						outstr = tjson(inTE.Text())
-					}
-					outTE.SetText(outstr)
+					//var outstr string
+					//if inTE.Text() == "" {
+					//	outstr = ""
+					//}else {
+					//	outstr = tjson(inTE.Text())
+					//}
+
+					outTE.SetText(tjson(inTE.Text()))
+
 				},
 			},
 		},
@@ -57,6 +71,7 @@ func main() {
 func tjson(s string) string {
 	tm :=  []byte(s)
 	outstr := cseYaml2Json.YAML2JSON(tm)
+	fmt.Println(outstr)
 	return outstr
 }
 
