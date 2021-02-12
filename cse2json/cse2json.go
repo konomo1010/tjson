@@ -7,53 +7,46 @@ import (
 	"log"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
-	//"io/ioutil"
-	//"log"
 	"os"
-	"regexp"
 )
 
 func main() {
 
-	if len(os.Args) == 1 {
-		errorInfo()
-		os.Exit(100)
-	}else {
-		//fmt.Println(os.Args[0])// args 第一个片 是文件路径
-		for _,v := range os.Args[1:] {
-			paths, files := filepath.Split(v)
-			file_ext := path.Ext(files)
-			file_name := strings.Split(files,file_ext)[0]
-			fmt.Println(paths, files, file_name, file_ext)
-			if judge,_ := regexp.MatchString(".[yaml|yml]$",files); judge {
-				//fmt.Println(v)
-				//fmt.Println(strings.Split(filepath.Base(v),".")[0])
-
-
-
-
-				// 判断文件是否存在
-				if checkFileIsExist(v) {
-					buffer, err := ioutil.ReadFile(v)
-					if err != nil {
-						log.Fatalf(err.Error())
-					}
-					mString := cseYaml2Json.YAML2JSON(buffer)
-					s := []byte(mString)
-					ioutil.WriteFile(paths+file_name+".json",s,0666)
-				}else {
-					errorInfo()
-				}
-
-
-			} else {
-				errorInfo()
+	for _,v := range os.Args[1:] {
+		filepath.Walk(v, func(p string, info os.FileInfo, err error) error {
+			if info == nil {
+				return err
 			}
-		}
-	}
+			if info.IsDir() {
+				return nil
+			}else {
+				path_ex, files := filepath.Split(p)
+				file_ext := path.Ext(files)
+				file_name := strings.Split(files,file_ext)[0]
 
+
+				if judge,_ := regexp.MatchString(".yaml$|.yml$",files); judge {
+					//fmt.Printf("=======> : %s\n",files,p)
+					if checkFileIsExist(p) {
+						buffer, err := ioutil.ReadFile(p)
+						if err != nil {
+							log.Fatalf(err.Error())
+						}
+						mString := cseYaml2Json.YAML2JSON(buffer)
+						s := []byte(mString)
+						fmt.Println(path_ex+file_name+".json")
+						ioutil.WriteFile(path_ex+file_name+".json",s,0666)
+					}else {
+						errorInfo()
+					}
+				}
+			}
+			return nil
+		})
+	}
 }
 
 func errorInfo() {

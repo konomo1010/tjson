@@ -31,7 +31,10 @@ func YAML2JSON(y []byte) string {
 	}
 
 	CseJson(yamlObj)
-	mjson,_ :=json.MarshalIndent(info,"\r\n","")
+
+
+	//mjson,_ :=json.MarshalIndent(info,"\r\n","")
+	mjson,_ :=json.MarshalIndent(info,"","\t")
 	mString := string(mjson)
 
 	info = map[string]string{}
