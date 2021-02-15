@@ -14,7 +14,7 @@ var info = map[string]string{}
 var ikey = []string{}
 
 //func main() {
-//	buffer, err := ioutil.ReadFile("./config.yaml")
+//	buffer, err := ioutil.ReadFile("./config_sjdf.yaml")
 //	if err != nil {
 //		log.Fatalf(err.Error())
 //	}
