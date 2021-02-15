@@ -58,6 +58,9 @@ func CseJson(yamlObj interface{})  {
 				if len(ikey) >= 1 {
 					ikey = append(ikey, k.(string))
 					sk := sli2str(ikey)
+					if typedValue == "" {
+						typedValue = `""`
+					}
 					info[sk] = typedValue
 					ikey = ikey[:len(ikey)-1]
 				}else {
@@ -126,6 +129,16 @@ func CseJson(yamlObj interface{})  {
 				}else {
 					info[k.(string)] = flages
 				}
+			case nil:
+				if len(ikey) >= 1 {
+					ikey = append(ikey, k.(string))
+					sk := sli2str(ikey)
+					info[sk] = `""`
+					ikey = ikey[:len(ikey)-1]
+				}else {
+					info[k.(string)] = `""`
+				}
+
 			default:
 				fmt.Printf("unkonw type >>. %T \n", v)
 			}
@@ -196,7 +209,7 @@ func map2str(smap map[interface{}]interface{}) map[string]interface{} {
 				mapstr[k.(string)] = "false"
 			}
 		default:
-			mapstr[k.(string)] = ""
+			mapstr[k.(string)] = `""`
 		}
 	}
 	return mapstr
