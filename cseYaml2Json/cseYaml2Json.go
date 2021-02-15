@@ -63,7 +63,6 @@ func CseJson(yamlObj interface{})  {
 				}else {
 					info[k.(string)] = typedValue
 				}
-
 			case []interface {}:
 				outstr := sli2slimap(typedValue)
 				if len(ikey) >= 1 {
@@ -76,7 +75,6 @@ func CseJson(yamlObj interface{})  {
 					json_str,_ := json.Marshal(outstr)
 					info[k.(string)] = string(json_str)
 				}
-
 			case int:
 				if len(ikey) >= 1 {
 					ikey = append(ikey, k.(string))
@@ -85,6 +83,48 @@ func CseJson(yamlObj interface{})  {
 					ikey = ikey[:len(ikey)-1]
 				}else {
 					info[k.(string)] = strconv.Itoa(typedValue)
+				}
+			case int64:
+				if len(ikey) >= 1 {
+					ikey = append(ikey, k.(string))
+					sk := sli2str(ikey)
+					info[sk] = strconv.FormatInt(typedValue, 10)
+					ikey = ikey[:len(ikey)-1]
+				}else {
+					info[k.(string)] = strconv.FormatInt(typedValue, 10)
+				}
+			case float64:
+				if len(ikey) >= 1 {
+					ikey = append(ikey, k.(string))
+					sk := sli2str(ikey)
+					info[sk] = strconv.FormatFloat(typedValue,'g', -1, 32)
+					ikey = ikey[:len(ikey)-1]
+				}else {
+					info[k.(string)] = strconv.FormatFloat(typedValue,'g', -1, 32)
+				}
+			case uint64:
+				if len(ikey) >= 1 {
+					ikey = append(ikey, k.(string))
+					sk := sli2str(ikey)
+					info[sk] = strconv.FormatUint(typedValue, 10)
+					ikey = ikey[:len(ikey)-1]
+				}else {
+					info[k.(string)] = strconv.FormatUint(typedValue, 10)
+				}
+			case bool:
+				var flages string
+				if typedValue {
+					flages = "true"
+				}else {
+					flages = "false"
+				}
+				if len(ikey) >= 1 {
+					ikey = append(ikey, k.(string))
+					sk := sli2str(ikey)
+					info[sk] = flages
+					ikey = ikey[:len(ikey)-1]
+				}else {
+					info[k.(string)] = flages
 				}
 			default:
 				fmt.Printf("unkonw type >>. %T \n", v)

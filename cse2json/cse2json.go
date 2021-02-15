@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 func main() {
@@ -25,8 +26,6 @@ func main() {
 	if err != nil {
 		fmt.Print(parser.Usage(err))
 	}
-
-	fmt.Println(*myFlag, *files, *dir, *out)
 	if len(*files) != 0 {
 		for _,v := range *files {
 			if PathExists(v) && IsFile(v) {
@@ -36,25 +35,28 @@ func main() {
 				}else {
 					outflag = false
 				}
-				fmt.Println("file : " + v)
 				path_ex, files := filepath.Split(v)
 				file_ext := path.Ext(files)
 				file_name := strings.Split(files,file_ext)[0]
 				if judge,_ := regexp.MatchString(".yaml$|.yml$",v); judge {
-					fmt.Println("here ")
 					buffer, err := ioutil.ReadFile(v)
 					if err != nil {
 						log.Fatalf(err.Error())
 					}
-					mString := cseYaml2Json.YAML2JSON(buffer)
-					s := []byte(mString)
-					if outflag {
-						fmt.Println(*out+file_name+".json")
-						ioutil.WriteFile(*out+file_name+".json",s,0666)
+					if utf8.Valid(buffer) {
+						mString := cseYaml2Json.YAML2JSON(buffer)
+						s := []byte(mString)
+						if outflag {
+							fmt.Println(*out+file_name+".json")
+							ioutil.WriteFile(*out+file_name+".json",s,0666)
+						}else {
+							fmt.Println(path_ex+file_name+".json")
+							ioutil.WriteFile(path_ex+file_name+".json",s,0666)
+						}
 					}else {
-						fmt.Println(path_ex+file_name+".json")
-						ioutil.WriteFile(path_ex+file_name+".json",s,0666)
+						fmt.Println("请输入 UTF8 编码文件")
 					}
+
 				}else {
 					errorInfo()
 				}
